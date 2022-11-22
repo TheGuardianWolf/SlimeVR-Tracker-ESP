@@ -27,16 +27,16 @@
 
 // Set parameters of IMU and board used
 #define IMU IMU_MPU9250
-#define SECOND_IMU IMU_MPU9250
+#define SECOND_IMU IMU_MPU6050
 #define BOARD BOARD_WROOM32
 
 // Rest
-#define IMU_ROTATION DEG_0
-#define SECOND_IMU_ROTATION DEG_180
+// #define IMU_ROTATION DEG_0
+// #define SECOND_IMU_ROTATION DEG_180
 
 // Chest
-// #define IMU_ROTATION DEG_0
-// #define SECOND_IMU_ROTATION DEG_0
+#define IMU_ROTATION DEG_180
+#define SECOND_IMU_ROTATION DEG_0
 
 // Battery monitoring options (comment to disable):
 //   BAT_EXTERNAL for ADC pin,
