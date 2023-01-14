@@ -27,7 +27,7 @@
 
 // Set parameters of IMU and board used
 #define IMU IMU_MPU9250
-#define SECOND_IMU IMU_MPU6050
+#define SECOND_IMU IMU_MPU9250
 #define BOARD BOARD_WROOM32
 
 // Rest
