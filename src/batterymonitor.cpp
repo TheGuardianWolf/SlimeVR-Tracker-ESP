@@ -102,7 +102,15 @@ void BatteryMonitor::Loop()
             if (voltage > 0) //valid measurement
             {
                 // Estimate battery level, 3.2V is 0%, 4.17V is 100% (1.0)
-                level = voltage / 3;
+
+                if (voltage > 2.8f)
+                    level = 1;
+                else if (voltage > 2.7f)
+                    level = 0.5;
+                else if (voltage > 2.65f)
+                    level = 0.2;
+                else
+                    level = voltage / 3;
 
                 if (level > 1)
                     level = 1;
