@@ -28,9 +28,9 @@
 // Set parameters of IMU and board used
 #define IMU IMU_BNO085
 #define SECOND_IMU IMU
-#define BOARD BOARD_SLIMEVR
-#define IMU_ROTATION DEG_270
-#define SECOND_IMU_ROTATION DEG_270
+#define BOARD BOARD_WEMOSD1MINI
+#define IMU_ROTATION DEG_90
+#define SECOND_IMU_ROTATION DEG_180
 
 #define PRIMARY_IMU_OPTIONAL false
 #define SECONDARY_IMU_OPTIONAL true
@@ -49,29 +49,29 @@
 #define BMI160_QMC_REMAP AXIS_REMAP_BUILD(AXIS_REMAP_USE_Y, AXIS_REMAP_USE_XN,
 AXIS_REMAP_USE_Z, \ AXIS_REMAP_USE_YN, AXIS_REMAP_USE_X, AXIS_REMAP_USE_Z)
 
-SENSOR_DESC_ENTRY(IMU_BMP160, PRIMARY_IMU_ADDRESS_ONE, IMU_ROTATION, PIN_IMU_SCL,
+IMU_DESC_ENTRY(IMU_BMP160, PRIMARY_IMU_ADDRESS_ONE, IMU_ROTATION, PIN_IMU_SCL,
 PIN_IMU_SDA, PRIMARY_IMU_OPTIONAL, BMI160_QMC_REMAP) \
 */
 
-#ifndef SENSOR_DESC_LIST
-#define SENSOR_DESC_LIST                       \
-	SENSOR_DESC_ENTRY(                         \
-		IMU,                                   \
-		PRIMARY_IMU_ADDRESS_ONE,               \
-		IMU_ROTATION,                          \
-		DIRECT_WIRE(PIN_IMU_SCL, PIN_IMU_SDA), \
-		PRIMARY_IMU_OPTIONAL,                  \
-		DIRECT_PIN(PIN_IMU_INT),               \
-		0                                      \
-	)                                          \
-	SENSOR_DESC_ENTRY(                         \
-		SECOND_IMU,                            \
-		SECONDARY_IMU_ADDRESS_TWO,             \
-		SECOND_IMU_ROTATION,                   \
-		DIRECT_WIRE(PIN_IMU_SCL, PIN_IMU_SDA), \
-		SECONDARY_IMU_OPTIONAL,                \
-		DIRECT_PIN(PIN_IMU_INT_2),             \
-		0                                      \
+#ifndef IMU_DESC_LIST
+#define IMU_DESC_LIST              \
+	IMU_DESC_ENTRY(                \
+		IMU,                       \
+		PRIMARY_IMU_ADDRESS_ONE,   \
+		IMU_ROTATION,              \
+		PIN_IMU_SCL,               \
+		PIN_IMU_SDA,               \
+		PRIMARY_IMU_OPTIONAL,      \
+		PIN_IMU_INT                \
+	)                              \
+	IMU_DESC_ENTRY(                \
+		SECOND_IMU,                \
+		SECONDARY_IMU_ADDRESS_TWO, \
+		SECOND_IMU_ROTATION,       \
+		PIN_IMU_SCL,               \
+		PIN_IMU_SDA,               \
+		SECONDARY_IMU_OPTIONAL,    \
+		PIN_IMU_INT_2              \
 	)
 #endif
 
@@ -220,10 +220,11 @@ PIN_IMU_SDA, PRIMARY_IMU_OPTIONAL, BMI160_QMC_REMAP) \
 // resistor values. The diagram looks like this:
 //   (Battery)--- [BATTERY_SHIELD_RESISTANCE] ---(INPUT_BOARD)---  [BATTERY_SHIELD_R2]
 //   ---(ESP32_INPUT)--- [BATTERY_SHIELD_R1] --- (GND)
-// #define BATTERY_SHIELD_RESISTANCE 180 //130k BatteryShield, 180k SlimeVR or fill in
-// external resistor value in kOhm #define BATTERY_SHIELD_R1 100 // Board voltage
-// divider resistor Ain to GND in kOhm #define BATTERY_SHIELD_R2 220 // Board voltage
-// divider resistor Ain to INPUT_BOARD in kOhm
+#define BATTERY_SHIELD_RESISTANCE \
+	180  // 130k BatteryShield, 180k SlimeVR or fill in external resistor value in kOhm
+// #define BATTERY_SHIELD_R1 100 // Board voltage divider resistor Ain to GND in kOhm
+// #define BATTERY_SHIELD_R2 220 // Board voltage divider resistor Ain to INPUT_BOARD in
+// kOhm
 
 // LED configuration:
 // Configuration Priority 1 = Highest:
@@ -246,15 +247,6 @@ PIN_IMU_SDA, PRIMARY_IMU_OPTIONAL, BMI160_QMC_REMAP) \
 #define PIN_BATTERY_LEVEL 17
 #define LED_PIN 2
 #define LED_INVERTED true
-#ifndef BATTERY_SHIELD_RESISTANCE
-#define BATTERY_SHIELD_RESISTANCE 0
-#endif
-#ifndef BATTERY_SHIELD_R1
-#define BATTERY_SHIELD_R1 10
-#endif
-#ifndef BATTERY_SHIELD_R2
-#define BATTERY_SHIELD_R2 40.2
-#endif
 #elif BOARD == BOARD_SLIMEVR_LEGACY || BOARD == BOARD_SLIMEVR_DEV
 #define PIN_IMU_SDA 4
 #define PIN_IMU_SCL 5
@@ -263,15 +255,6 @@ PIN_IMU_SDA, PRIMARY_IMU_OPTIONAL, BMI160_QMC_REMAP) \
 #define PIN_BATTERY_LEVEL 17
 #define LED_PIN 2
 #define LED_INVERTED true
-#ifndef BATTERY_SHIELD_RESISTANCE
-#define BATTERY_SHIELD_RESISTANCE 0
-#endif
-#ifndef BATTERY_SHIELD_R1
-#define BATTERY_SHIELD_R1 10
-#endif
-#ifndef BATTERY_SHIELD_R2
-#define BATTERY_SHIELD_R2 40.2
-#endif
 #elif BOARD == BOARD_NODEMCU || BOARD == BOARD_WEMOSD1MINI
 #define PIN_IMU_SDA D2
 #define PIN_IMU_SCL D1
@@ -331,7 +314,7 @@ PIN_IMU_SDA, PRIMARY_IMU_OPTIONAL, BMI160_QMC_REMAP) \
 #define PIN_BATTERY_LEVEL 3
 #define LED_PIN 10
 #define LED_INVERTED false
-#elif BOARD == BOARD_ES32C3DEVKITM1 || BOARD == BOARD_ES32C6DEVKITC1
+#elif BOARD == BOARD_ES32C3DEVKITM1
 #define PIN_IMU_SDA 5
 #define PIN_IMU_SCL 4
 #define PIN_IMU_INT 6
@@ -365,23 +348,5 @@ PIN_IMU_SDA, PRIMARY_IMU_OPTIONAL, BMI160_QMC_REMAP) \
 #endif
 #ifndef BATTERY_SHIELD_R2
 #define BATTERY_SHIELD_R2 100
-#endif
-#elif BOARD == BOARD_GLOVE_IMU_SLIMEVR_DEV
-#define PIN_IMU_SDA 1
-#define PIN_IMU_SCL 0
-#define PCA_ADDR 0x70
-#define PIN_IMU_INT 16
-#define PIN_IMU_INT_2 13
-#define PIN_BATTERY_LEVEL 3
-#define LED_PIN 2
-#define LED_INVERTED true
-#ifndef BATTERY_SHIELD_RESISTANCE
-#define BATTERY_SHIELD_RESISTANCE 0
-#endif
-#ifndef BATTERY_SHIELD_R1
-#define BATTERY_SHIELD_R1 10
-#endif
-#ifndef BATTERY_SHIELD_R2
-#define BATTERY_SHIELD_R2 40.2
 #endif
 #endif
