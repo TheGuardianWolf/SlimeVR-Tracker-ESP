@@ -33,7 +33,19 @@ SensorStatus Sensor::getSensorState() {
 
 void Sensor::setAcceleration(Vector3 a) {
 	acceleration = a;
-	sensorOffset.sandwich(acceleration);
+	// In plain terms: the IMU chip is deliberately mounted at an angle relative
+	// to the board itself (sensorOffset), often to fit the board's layout. `a`
+	// is the raw accelerometer reading in that rotated chip frame, so it needs
+	// to be rotated back to line up with the board before it means anything to
+	// the rest of the app (or to the server). sensorOffset.inverse() is that
+	// "rotate back" step.
+	//
+	// More precisely: setFusedRotation() below sends fusedRotation = r *
+	// sensorOffset, which means sensorOffset maps a board-frame vector into the
+	// raw IMU frame that r (and this raw accelerometer reading) operates in.
+	// Converting the other way, from that raw IMU frame back to board frame,
+	// takes the inverse of sensorOffset, not sensorOffset itself.
+	sensorOffset.inverse().sandwich(acceleration);
 	newAcceleration = true;
 }
 
